@@ -162,10 +162,15 @@ function validatedQueryParams(requestUrl: URL) {
       toPubkey = new PublicKey(requestUrl.searchParams.get("to")!);
     }
     if (requestUrl.searchParams.get("amountInSOL")) {
-      amountInSOL = requestUrl.searchParams.get("amountInSOL")!;
+      amountInSOL = (
+        Number(requestUrl.searchParams.get("amountInSOL")!) *
+        Number(1000_000_000)
+      ).toString();
     }
     if (requestUrl.searchParams.get("amountInUSDC")) {
-      amountInUSDC = requestUrl.searchParams.get("amountInUSDC")!;
+      amountInUSDC = (
+        Number(requestUrl.searchParams.get("amountInUSDC")!) * Number(1000000)
+      ).toString();
     }
   } catch (err) {
     throw "Invalid input query parameter: to";
