@@ -9,17 +9,7 @@ import {
   ActionGetResponse,
   ActionPostRequest,
 } from "@solana/actions";
-import {
-  Authorized,
-  clusterApiUrl,
-  Connection,
-  Keypair,
-  LAMPORTS_PER_SOL,
-  PublicKey,
-  StakeProgram,
-  SystemProgram,
-  Transaction,
-} from "@solana/web3.js";
+import { Connection, Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { LimitOrderProvider } from "@jup-ag/limit-order-sdk";
 import { BN } from "bn.js";
 
@@ -32,7 +22,8 @@ const DEFAULT_SOL_AMOUNT: number = 1.0;
 export const GET = async (req: Request) => {
   try {
     const requestUrl = new URL(req.url);
-    const { toPubkey } = validatedQueryParams(requestUrl);
+    const { toPubkey, amountInUSDC, amountInSOL } =
+      validatedQueryParams(requestUrl);
 
     const baseHref = new URL(
       `/api/actions/limit`,
@@ -87,7 +78,8 @@ export const OPTIONS = GET;
 export const POST = async (req: Request) => {
   try {
     const requestUrl = new URL(req.url);
-    const { amount, toPubkey } = validatedQueryParams(requestUrl);
+    const { amountInSOL, amountInUSDC, toPubkey } =
+      validatedQueryParams(requestUrl);
 
     const body: ActionPostRequest = await req.json();
 
@@ -102,15 +94,9 @@ export const POST = async (req: Request) => {
       });
     }
 
-    const connection = new Connection(clusterApiUrl("mainnet-beta"));
-
-    // ensure the receiving account will be rent exempt
-    const minimumBalance = await connection.getMinimumBalanceForRentExemption(
-      0 // note: simple accounts that just store native SOL have `0` bytes of data
+    const connection = new Connection(
+      "https://mainnet.helius-rpc.com/?api-key=a0529e8a-e33f-4f66-95ad-b9036bc552e7"
     );
-    if (amount * LAMPORTS_PER_SOL < minimumBalance) {
-      throw `account may not be rent exempt: ${toPubkey.toBase58()}`;
-    }
 
     const transaction = new Transaction();
 
@@ -125,10 +111,10 @@ export const POST = async (req: Request) => {
 
     const { tx } = await limitOrder.createOrder({
       owner: toPubkey,
-      inAmount: new BN(100000), // 1000000 => 1 USDC if inputToken.address is USDC mint
-      outAmount: new BN(100000),
-      inputMint: new PublicKey("So11111111111111111111111111111111111111112"),
-      outputMint: new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
+      inAmount: new BN(Number(amountInUSDC) ?? 1000000), // 1000000 => 1 USDC if inputToken.address is USDC mint
+      outAmount: new BN(Number(amountInSOL) ?? 1000000),
+      inputMint: new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
+      outputMint: new PublicKey("So11111111111111111111111111111111111111112"),
       expiredAt: null,
       base: base.publicKey,
     });
@@ -167,7 +153,8 @@ export const POST = async (req: Request) => {
 
 function validatedQueryParams(requestUrl: URL) {
   let toPubkey: PublicKey = DEFAULT_SOL_ADDRESS;
-  let amount: number = DEFAULT_SOL_AMOUNT;
+  let amountInSOL = "1000000";
+  let amountInUSDC = "1000000";
 
   try {
     if (requestUrl.searchParams.get("to")) {
@@ -177,18 +164,9 @@ function validatedQueryParams(requestUrl: URL) {
     throw "Invalid input query parameter: to";
   }
 
-  try {
-    if (requestUrl.searchParams.get("amount")) {
-      amount = parseFloat(requestUrl.searchParams.get("amount")!);
-    }
-
-    if (amount <= 0) throw "amount is too small";
-  } catch (err) {
-    throw "Invalid input query parameter: amount";
-  }
-
   return {
-    amount,
+    amountInSOL,
+    amountInUSDC,
     toPubkey,
   };
 }
