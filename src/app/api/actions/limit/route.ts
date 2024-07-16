@@ -22,9 +22,10 @@ const DEFAULT_SOL_AMOUNT: number = 1.0;
 export const GET = async (req: Request) => {
   try {
     const requestUrl = new URL(req.url);
+    const { toPubkey } = validatedQueryParams(requestUrl);
 
     const baseHref = new URL(
-      `/api/actions/limit`,
+      `/api/actions/limit?to=${toPubkey}`,
       requestUrl.origin
     ).toString();
 
@@ -37,7 +38,7 @@ export const GET = async (req: Request) => {
         actions: [
           {
             label: "Limit Order on JUP", // button text
-            href: `${baseHref}?amountInUSDC={amountInUSDC}&amountInSOL={amountInSOL}`, // this href will have a text input
+            href: `${baseHref}&amountInUSDC={amountInUSDC}&amountInSOL={amountInSOL}`, // this href will have a text input
             parameters: [
               {
                 name: "amountInUSDC", // parameter name in the `href` above
@@ -81,7 +82,7 @@ export const POST = async (req: Request) => {
 
     console.log("amountInSOL", amountInSOL);
     console.log("amountInUSDC", amountInUSDC);
-
+    console.log("toPubkey", toPubkey);
     const body: ActionPostRequest = await req.json();
 
     // validate the client provided input
