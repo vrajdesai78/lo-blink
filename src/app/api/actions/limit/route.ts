@@ -23,11 +23,11 @@ import {
 import { LimitOrderProvider } from "@jup-ag/limit-order-sdk";
 import { BN } from "bn.js";
 
-export const DEFAULT_SOL_ADDRESS: PublicKey = new PublicKey(
-  "GqkJ3UoKTScvXiaJUxrGJ9QD847LAj2DTvMzqjaT2tJm" 
+const DEFAULT_SOL_ADDRESS: PublicKey = new PublicKey(
+  "GqkJ3UoKTScvXiaJUxrGJ9QD847LAj2DTvMzqjaT2tJm"
 );
 
-export const DEFAULT_SOL_AMOUNT: number = 1.0;
+const DEFAULT_SOL_AMOUNT: number = 1.0;
 
 export const GET = async (req: Request) => {
   try {
@@ -40,14 +40,14 @@ export const GET = async (req: Request) => {
     ).toString();
 
     const payload: ActionGetResponse = {
-      title: "Actions Example - Transfer Native SOL",
-      icon: new URL("/solana_devs.jpg", requestUrl.origin).toString(),
-      description: "Transfer SOL to another Solana wallet",
+      title: "Limit Order JUP",
+      icon: "https://imgur.com/dVgvjB9",
+      description: "Limit Order on JUP",
       label: "Transfer", // this value will be ignored since `links.actions` exists
       links: {
         actions: [
           {
-            label: "DCA", // button text
+            label: "Limit Order on JUP", // button text
             href: `${baseHref}`, // this href will have a text input
             parameters: [
               {
