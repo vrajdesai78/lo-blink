@@ -81,6 +81,9 @@ export const POST = async (req: Request) => {
     const { amountInSOL, amountInUSDC, toPubkey } =
       validatedQueryParams(requestUrl);
 
+    console.log("amountInSOL", amountInSOL);
+    console.log("amountInUSDC", amountInUSDC);
+
     const body: ActionPostRequest = await req.json();
 
     // validate the client provided input
@@ -111,8 +114,8 @@ export const POST = async (req: Request) => {
 
     const { tx } = await limitOrder.createOrder({
       owner: toPubkey,
-      inAmount: new BN(Number(amountInUSDC) ?? 1000000), // 1000000 => 1 USDC if inputToken.address is USDC mint
-      outAmount: new BN(Number(amountInSOL) ?? 1000000),
+      inAmount: new BN(Number(amountInUSDC) ?? 5000000), // 1000000 => 1 USDC if inputToken.address is USDC mint
+      outAmount: new BN(Number(amountInSOL) ?? 5000000),
       inputMint: new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
       outputMint: new PublicKey("So11111111111111111111111111111111111111112"),
       expiredAt: null,
@@ -153,8 +156,8 @@ export const POST = async (req: Request) => {
 
 function validatedQueryParams(requestUrl: URL) {
   let toPubkey: PublicKey = DEFAULT_SOL_ADDRESS;
-  let amountInSOL = "1000000";
-  let amountInUSDC = "1000000";
+  let amountInSOL = "5000000";
+  let amountInUSDC = "5000000";
 
   try {
     if (requestUrl.searchParams.get("to")) {
