@@ -31,7 +31,7 @@ export const GET = async (req: Request) => {
 
     const payload: ActionGetResponse = {
       title: "Buy SOL at your price",
-      icon: new URL("/lo.png", requestUrl.origin).toString(),
+      icon: new URL("/lo-blink.png", requestUrl.origin).toString(),
       description: "Place limit orders to buy SOL",
       label: "Transfer", // this value will be ignored since `links.actions` exists
       links: {
