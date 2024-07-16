@@ -30,9 +30,9 @@ export const GET = async (req: Request) => {
     ).toString();
 
     const payload: ActionGetResponse = {
-      title: "Limit Order JUP",
+      title: "Buy SOL with limit order",
       icon: new URL("/jup.jpeg", requestUrl.origin).toString(),
-      description: "Limit Order on JUP",
+      description: "Place limit orders to buy SOL",
       label: "Transfer", // this value will be ignored since `links.actions` exists
       links: {
         actions: [
@@ -112,7 +112,7 @@ export const POST = async (req: Request) => {
     const base = Keypair.generate();
 
     const { tx } = await limitOrder.createOrder({
-      owner: toPubkey,
+      owner: account,
       inAmount: new BN(Number(amountInUSDC) ?? 5000000), // 1000000 => 1 USDC if inputToken.address is USDC mint
       outAmount: new BN(Number(amountInSOL) ?? 5000000),
       inputMint: new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
