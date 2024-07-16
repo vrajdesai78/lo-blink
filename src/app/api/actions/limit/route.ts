@@ -32,7 +32,7 @@ export const GET = async (req: Request) => {
 
     const payload: ActionGetResponse = {
       title: "Limit Order JUP",
-      icon: "https://imgur.com/dVgvjB9",
+      icon: new URL("/jup-logo.jpg", requestUrl.origin).toString(),
       description: "Limit Order on JUP",
       label: "Transfer", // this value will be ignored since `links.actions` exists
       links: {
@@ -159,6 +159,12 @@ function validatedQueryParams(requestUrl: URL) {
   try {
     if (requestUrl.searchParams.get("to")) {
       toPubkey = new PublicKey(requestUrl.searchParams.get("to")!);
+    }
+    if (requestUrl.searchParams.get("amountInSOL")) {
+      amountInSOL = requestUrl.searchParams.get("amountInSOL")!;
+    }
+    if (requestUrl.searchParams.get("amountInUSDC")) {
+      amountInUSDC = requestUrl.searchParams.get("amountInUSDC")!;
     }
   } catch (err) {
     throw "Invalid input query parameter: to";
