@@ -22,8 +22,6 @@ const DEFAULT_SOL_AMOUNT: number = 1.0;
 export const GET = async (req: Request) => {
   try {
     const requestUrl = new URL(req.url);
-    const { toPubkey, amountInUSDC, amountInSOL } =
-      validatedQueryParams(requestUrl);
 
     const baseHref = new URL(
       `/api/actions/limit`,
@@ -32,14 +30,14 @@ export const GET = async (req: Request) => {
 
     const payload: ActionGetResponse = {
       title: "Limit Order JUP",
-      icon: new URL("/jup-logo.jpg", requestUrl.origin).toString(),
+      icon: new URL("/jup.jpeg", requestUrl.origin).toString(),
       description: "Limit Order on JUP",
       label: "Transfer", // this value will be ignored since `links.actions` exists
       links: {
         actions: [
           {
             label: "Limit Order on JUP", // button text
-            href: `${baseHref}`, // this href will have a text input
+            href: `${baseHref}?amountInUSDC={amountInUSDC}&amountInSOL={amountInSOL}`, // this href will have a text input
             parameters: [
               {
                 name: "amountInUSDC", // parameter name in the `href` above
@@ -157,7 +155,7 @@ export const POST = async (req: Request) => {
 function validatedQueryParams(requestUrl: URL) {
   let toPubkey: PublicKey = DEFAULT_SOL_ADDRESS;
   let amountInSOL = "5000000";
-  let amountInUSDC = "5000000";
+  let amountInUSDC = "10000000";
 
   try {
     if (requestUrl.searchParams.get("to")) {
